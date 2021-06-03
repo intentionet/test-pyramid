@@ -1,0 +1,16 @@
+asn_range:
+  leaf:
+    min: 65001
+    max: 65100
+  spine:
+    min: 65101
+    max: 65200
+  bl:
+    min: 65201
+    max: 65300
+  fwl:
+    min: 65301
+    max: 65400
+  bor:
+    min: 65401
+    max: 65500
