@@ -4,13 +4,35 @@ asn_range:
     max: 65100
   spine:
     min: 65101
-    max: 65200
+    max: 65104
   bl:
     min: 65201
-    max: 65300
+    max: 65204
   fwl:
     min: 65301
-    max: 65400
+    max: 65301
   bor:
     min: 65401
-    max: 65500
+    max: 65402
+ipam:
+  physical:
+     in_prefixes:
+       - 10.0.0.0/16
+       - 10.2.0.0/16
+     prefix_length: 31
+  loopback:
+     in_prefixes:
+       - 10.1.0.0/16
+     prefix_length: 32
+  management:
+     in_prefixes:
+       - 10.254.1.0/24
+     prefix_length: 16
+  vlan:
+    in_prefixes:
+      - 10.100.0.0/16
+      - 10.200.0.0/16
+    prefix_length: 24
+
+
+

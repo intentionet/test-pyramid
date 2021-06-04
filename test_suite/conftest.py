@@ -2,6 +2,7 @@ from typing import Dict, Any
 
 import pytest
 import os
+import sys
 import yaml
 
 from pybatfish.client.session import Session
@@ -14,6 +15,11 @@ SNAPSHOT_DIR = os.path.join(REPO_DIR, "snapshot")
 
 MOCK_SOT = os.path.join(REPO_DIR, "mock_sot.yml")
 
+sys.path.append(REPO_DIR)
+
+from test_suite.sot_utils import SoT
+
+
 @pytest.fixture(scope="session")
 def bf() -> Session:
     bf = Session.get(host=BF_HOST)
@@ -21,6 +27,7 @@ def bf() -> Session:
     return bf
 
 
-def mock_sot() -> Dict[str, Any]:
-    mock_sot = yaml.load(MOCK_SOT, Loader=yaml.SafeLoader)
-    return mock_sot
+@pytest.fixture(scope="session")
+def sot() -> SoT:
+    sot = SoT(yaml.load(open(MOCK_SOT), Loader=yaml.SafeLoader))
+    return sot
