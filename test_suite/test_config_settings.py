@@ -1,10 +1,7 @@
 import ipaddress
 
-from typing import Dict, Any
 from pybatfish.client.session import Session
-from test_suite.sot_utils import node_name_to_role, SoT
-
-SNAPSHOT_NODES_SPEC = '(/.*/ \ /(isp|internet).*/)'
+from test_suite.sot_utils import SoT, SNAPSHOT_NODES_SPEC
 
 
 def test_interface_ips(bf: Session, sot: SoT) -> None:
