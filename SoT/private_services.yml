@@ -1,0 +1,11 @@
+- description: Remote desktop
+  applications:
+    - tcp/3389
+  ips:
+    - 10.100.100.0/24
+
+- description: Private databases
+  applications:
+    - mysql
+  ips:
+    - 10.200.200.0/24

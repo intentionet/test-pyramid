@@ -1,0 +1,68 @@
+- title: Accessibility of external services
+  description: External services should be reachable from inside
+  serviceAccessibility:
+    source:
+      location:
+        # TODO: do all sources
+        interfaceLinkLocation:
+          interface:
+            hostname: leaf01
+            interface_name: Vlan101
+    services:
+      - name: Google DNS
+        apps:
+          - dns
+        service_ips:
+          - exact_match: 8.8.8.8
+
+      - name: Cloudflare DNS
+        apps:
+          - dns
+        service_ips:
+          - exact_match: 1.1.1.1
+
+      - name: AWS
+        # TODO: other AWS IPs
+        apps:
+          - https
+        service_ips:
+          - in_prefix: 3.80.0.0/12
+
+- title: Accessibility of internal services
+  description: Internal services should be reachable from outside
+  serviceAccessibility:
+    source:
+      location:
+        interfaceLinkLocation:
+          interface:
+            hostname: internet
+            interface_name: out
+      sourceIps:
+        exclude:
+          - in_prefix: 10.0.0.0/8
+          - in_prefix: 172.16.0.0/12
+          - in_prefix: 192.168.0.0/16
+          - in_prefix: 0.0.0.0/8
+          - in_prefix: 127.0.0.0/8
+          - in_prefix: 169.254.0.0/16
+          - in_prefix: 52.15.165.117/32
+          - in_prefix: 78.93.180.80/32
+          - in_prefix: 109.235.246.70/32
+          - in_prefix: 190.210.230.78/32
+          - in_prefix: 194.27.18.18/32
+          - in_prefix: 201.216.233.13/32
+      sourcePorts:
+        - start: 49152
+          end: 65535
+    services:
+      - name: web01
+        apps:
+          - https
+        service_ips:
+          - exact_match: 10.200.1.0
+
+      - name: web02
+        apps:
+          - https
+        service_ips:
+          - exact_match: 10.200.2.0

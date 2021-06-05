@@ -1,20 +1,4 @@
-asn_range:
-  leaf:
-    min: 65001
-    max: 65100
-  spine:
-    min: 65101
-    max: 65104
-  bl:
-    min: 65201
-    max: 65204
-  fwl:
-    min: 65301
-    max: 65301
-  bor:
-    min: 65401
-    max: 65402
-ipam:
+interface_types:
   physical:
      in_prefixes:
        - 10.0.0.0/16
@@ -33,6 +17,3 @@ ipam:
       - 10.100.0.0/16
       - 10.200.0.0/16
     prefix_length: 24
-
-
-
