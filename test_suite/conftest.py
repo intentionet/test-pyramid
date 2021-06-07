@@ -1,14 +1,11 @@
-from typing import Dict, Any
-
-import pytest
 import os
-import sys
-import yaml
+import pytest
 
 from pybatfish.client.session import Session
+from test_suite.sot_utils import SoT, SNAPSHOT_NODES_SPEC
 
-# Set to true if you don't want to initialize snapshots and use one that is already initialized
-#  - the BF_NETWORK and BF_SNAPSHOT environment variables must be set for this to work
+# Set to true if you want to use a snapshot that is already initialized (useful for debugging tests).
+# The BF_NETWORK and BF_SNAPSHOT environment variables must be set for this to work.
 # So, a valid way to run is "DEBUG_TESTS=True BF_NETWORK=mynetwoork BF_SNAPSHOT=mysnapshot pytest test_suite"
 DEBUG_TESTS = bool(os.environ.get("DEBUG_TESTS", False))
 
@@ -18,10 +15,6 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 REPO_DIR = os.path.dirname(SCRIPT_DIR)
 SNAPSHOT_DIR = os.path.join(REPO_DIR, "snapshot")
 SOT_DIR = os.path.join(REPO_DIR, "SoT")
-
-sys.path.append(REPO_DIR)
-
-from test_suite.sot_utils import SoT, SNAPSHOT_NODES_SPEC
 
 
 def _validate_snapshot(bf: Session, sot: SoT) -> None:
@@ -35,6 +28,7 @@ def _validate_snapshot(bf: Session, sot: SoT) -> None:
 
 @pytest.fixture(scope="session")
 def bf(sot: SoT) -> Session:
+    """Fixture to create a session to the Batfish servicec and initialize the snapshot."""
     bf = Session.get(host=BF_HOST)
     if DEBUG_TESTS:
         bf.set_network(os.environ["BF_NETWORK"])
@@ -47,5 +41,6 @@ def bf(sot: SoT) -> Session:
 
 @pytest.fixture(scope="session")
 def sot() -> SoT:
+    """Fixture to initialize the mock SoT used for these tests."""
     sot = SoT(SOT_DIR)
     return sot

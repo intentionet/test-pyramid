@@ -1,4 +1,5 @@
 ansible
+attrs
 pybatfish
 pytest
 PyYAML

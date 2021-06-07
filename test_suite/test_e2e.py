@@ -1,35 +1,68 @@
 from pybatfish.client.session import Session
 from pybatfish.datamodel import PathConstraints, HeaderConstraints
 
-from test_suite.sot_utils import SoT, ALLOWED_CLIENT_PORTS, BLOCKED_SOURCES
+from test_suite.sot_utils import (SoT, BLOCKED_PREFIXES, SNAPSHOT_NODES_SPEC, OPEN_CLIENT_PORTS)
 
 
 def test_public_services(bf: Session, sot: SoT) -> None:
-    path_constraints = PathConstraints(startLocation="internet")
-    src_ips = '0.0.0.0/0 \ ({})'.format(",".join(BLOCKED_SOURCES))
-    src_ports = f"{ALLOWED_CLIENT_PORTS.start}-{ALLOWED_CLIENT_PORTS.stop-1}"
+    """Check that all public services are accessible from the Internet."""
     for service in sot.public_services:
-        applications = ",".join(service["applications"])
-        service_ips = ",".join(service["ips"])
-        denied_flows = bf.q.reachability(pathConstraints=path_constraints,
-                                         headers=HeaderConstraints(srcIps=src_ips,
-                                                                   srcPorts=src_ports,
-                                                                   dstIps=service_ips,
-                                                                   applications=applications),
-                                         actions="failure").answer().frame()
-        assert denied_flows.empty, "Some traffic to {} is denied: {}".format(service["description"],
-                                                                             denied_flows["Flow"])
+        failed_flows = bf.q.reachability(
+            pathConstraints=PathConstraints(startLocation="internet"),
+            headers=HeaderConstraints(
+                srcIps='0.0.0.0/0 \\ ({})'.format(",".join(BLOCKED_PREFIXES)),
+                srcPorts=OPEN_CLIENT_PORTS,
+                dstIps=",".join(service["ips"]),
+                applications=",".join(service["applications"])),
+            actions="failure").answer().frame()
+        assert failed_flows.empty, \
+            "Some flows to public service '{}' fail: {}".format(service["description"],
+                                                                failed_flows["Flow"])
 
 
 def test_private_services(bf: Session, sot: SoT) -> None:
-    path_constraints = PathConstraints(startLocation="internet")
+    """Check that all private services are inaccessible from the Internet."""
     for service in sot.private_services:
-        applications = ",".join(service["applications"])
-        service_ips = ",".join(service["ips"])
-        allowed_flows = bf.q.reachability(pathConstraints=path_constraints,
-                                          headers=HeaderConstraints(dstIps=service_ips,
-                                                                    applications=applications),
-                                          actions="success").answer().frame()
-        assert allowed_flows.empty, "Some traffic to {} is denied: {}".format(service["description"],
-                                                                              allowed_flows["Flow"])
+        allowed_flows = bf.q.reachability(
+            pathConstraints=PathConstraints(startLocation="internet"),
+            headers=HeaderConstraints(
+                dstIps=",".join(service["ips"]),
+                applications=",".join(service["applications"])),
+            actions="success").answer().frame()
+        assert allowed_flows.empty, \
+            "Some traffic to private service {} is allowed: {}".format(service["description"],
+                                                                       allowed_flows["Flow"])
 
+
+def test_external_services(bf: Session, sot: SoT) -> None:
+    """Check that all external services are accessible from all leaf routers."""
+    for service in sot.external_services:
+        failed_flows = bf.q.reachability(
+            pathConstraints=PathConstraints(startLocation="/leaf.*/"),
+            headers=HeaderConstraints(
+                dstIps=",".join(service["ips"]),
+                applications=",".join(service["applications"])),
+            actions="failure").answer().frame()
+        assert failed_flows.empty, \
+            "Some flows to external service {} fail: {}".format(service["description"],
+                                                                failed_flows["Flow"])
+
+
+def test_all_svi_prefixes_are_on_all_leafs(bf: Session, sot: SoT):
+    """Check that all SVI prefixes are on all leafs."""
+    all_leafs = set(sot.inventory.get_groups_dict()['leaf'])
+    # for each prefix set on each vlan interface
+    for svi_prefixes in bf.q.interfaceProperties(interfaces="/vlan.*/").answer().frame()['All_Prefixes']:
+        for prefix in svi_prefixes:
+            # each vlan prefix should be present on each leaf
+            leafs_with_prefix = set(bf.q.routes(nodes="/leaf.*/",
+                                                network=prefix).answer().frame()["Node"].unique())
+            assert all_leafs == leafs_with_prefix
+
+
+def test_default_route_presence(bf: Session, sot: SoT):
+    """Check that all routers have the default route."""
+    all_nodes = {host.get_name() for host in sot.inventory.get_hosts()}
+    nodes_with_default = set(bf.q.routes(nodes=SNAPSHOT_NODES_SPEC,
+                                         network="0.0.0.0/0").answer().frame()["Node"].unique())
+    assert all_nodes == nodes_with_default
