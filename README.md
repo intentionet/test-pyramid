@@ -2,8 +2,11 @@ This repository accompanies the Network Test Pyramid blog.
 
 # Running the test suite
 
-1. Clone this repo
-2. In a Python virtual environment: 
+1. Download and run Batfish. Details [here](https://pybatfish.readthedocs.io/en/latest/getting_started.html); short version:
+   - `docker pull batfish/allinone`
+   - `docker run --name batfish -v batfish-data:/data -p 8888:8888 -p 9997:9997 -p 9996:9996 batfish/allinone`
+3. Clone this repo
+4. In a Python virtual environment: 
    - `pip install -r requirements.txt`
    - `pytest test_suite`
 
