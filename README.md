@@ -1,4 +1,4 @@
-This repository accompanies the Network Test Pyramid blog. 
+This repository accompanies [the Networking Test Pyramid blog](https://www.intentionet.com/blog/the-networking-test-pyramid/). 
 
 # Running the test suite
 
