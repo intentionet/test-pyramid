@@ -14,4 +14,5 @@ This repository accompanies the Network Test Pyramid blog.
 
 - The `test_suite` folder has the tests, written as pytest modules. 
 - The `snapshot` folder has the network snapshot that is used in the tests.
-- The `SoT` folder represents a mock source of truth for the network. `test-suite/sot_utils.py` makes this and other information available to the tests. 
+- The `SoT` folder represents a mock source of truth for the network. 
+- `test-suite/sot_utils.py` makes this information available to the tests. If you are adapting this test suite for your network, start by modifying this script to use your actual SoT. 
