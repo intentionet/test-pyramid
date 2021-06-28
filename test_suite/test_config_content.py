@@ -104,3 +104,10 @@ def test_multipath_ebgp_on_leafs(bf: Session) -> None:
     non_multipath = bgp_process_config[bgp_process_config["Multipath_EBGP"] == False]
     assert non_multipath.empty, \
         "Found leaf routers without EBGP multipath: {}".format(",".join(non_multipath["Node"]))
+
+
+def test_no_undefined_references(bf: Session) -> None:
+    """Check that there are no undefined references in device configs"""
+    undefined_refs = bf.q.undefinedReferences().answer().frame()
+    assert undefined_refs.empty, \
+        "Found undefined references: {}".format(undefined_refs.to_dict(orient="records"))
