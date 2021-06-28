@@ -41,10 +41,11 @@ To run the tests on your network, you need to supply your own network configs an
     `pytest -k test_no_duplicate_ips test_suite`
     `pytest -k test_no_undefined_references test_suite`
 
-3. Now, you can port the test code to your network. A simple way to do that is to port over the constants and functions in `test_suite/sot_utils.py.` Many of these functions are based on the data in the `SoT` folder. 
+3. Now, you can port the tests that are relevant for your network--not all tests in the test suite may be meaningful for you. A simple way to do that is to port over the constants and functions in `test_suite/sot_utils.py.` Many of these functions are based on the data in the `SoT` folder. 
 
    You may do this porting test at a time, updating the inputs for indiviidual tests and testing along the way. 
 
+4. Develop new tests that are relevant for your network, e.g., for behaviors your ACLs and firewall rules are intended to implement or for end-to-end connectivity properties of your network.
 
 For questions or feedback, find us on [Slack](https://join.slack.com/t/batfish-org/shared_invite/enQtMzA0Nzg2OTAzNzQ1LTcyYzY3M2Q0NWUyYTRhYjdlM2IzYzRhZGU1NWFlNGU2MzlhNDY3OTJmMDIyMjQzYmRlNjhkMTRjNWIwNTUwNTQ).
 
