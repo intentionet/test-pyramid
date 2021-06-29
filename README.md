@@ -25,10 +25,21 @@ This repo contains an example network that you can use to play with the test sui
  - If you wanted to run tests at only one level of the pyramid, you can do: 
 
    `pytest -k config_content test_suite`
-
- - If you wanted to run a particular test, you can do: 
+   
+   `-k` is a powerful pytest command line option that lets you run a subset of the tests by supplying a pattern. Full documentation is [here](https://docs.pytest.org/en/latest/example/markers.html#using-k-expr-to-select-tests-based-on-their-name) but common patterns include a subset of the name of the test module or the test name. 
+   
+   You can find out all the tests and modules in the test suite via 
+   
+   `pytest --collect-only test_suite` 
+   
+ - So, if you wanted to run a particular test, you can do: 
  
     `pytest -k test_no_duplicate_ips test_suite`
+    
+ - Or, if you wanted to run all tests with the word 'blocked' in them, you can do:   
+
+    `pytest -k blocked test_suite`
+    
 
 ## Running on your network
 
