@@ -1,7 +1,16 @@
 import ipaddress
+import pytest
 
 from pybatfish.client.session import Session
 from test_suite.sot_utils import (SoT, SNAPSHOT_NODES_SPEC, INTERFACES_WITHOUT_ADDRESS)
+
+
+@pytest.mark.network_independent
+def test_no_undefined_references(bf: Session) -> None:
+    """Check that there are no undefined references in device configs"""
+    undefined_refs = bf.q.undefinedReferences().answer().frame()
+    assert undefined_refs.empty, \
+        "Found undefined references: {}".format(undefined_refs.to_dict(orient="records"))
 
 
 def test_interface_addresses(bf: Session, sot: SoT) -> None:
@@ -36,6 +45,7 @@ def _dup_ip_msg(dup_ip, dup_ip_group):
     return "{} ({})".format(dup_ip, ", ".join(dup_ip_group["Node"]))
 
 
+@pytest.mark.network_independent
 def test_no_duplicate_ips(bf: Session) -> None:
     """Check that all assigned IP addresses are unique."""
     dup_ip_owners = bf.q.ipOwners(duplicatesOnly=True).answer().frame()
@@ -104,3 +114,7 @@ def test_multipath_ebgp_on_leafs(bf: Session) -> None:
     non_multipath = bgp_process_config[bgp_process_config["Multipath_EBGP"] == False]
     assert non_multipath.empty, \
         "Found leaf routers without EBGP multipath: {}".format(",".join(non_multipath["Node"]))
+<<<<<<< Updated upstream:test_suite/test_config_settings.py
+=======
+
+>>>>>>> Stashed changes:test_suite/test_config_content.py

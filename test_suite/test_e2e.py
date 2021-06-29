@@ -1,7 +1,30 @@
+import pytest
+
 from pybatfish.client.session import Session
 from pybatfish.datamodel import PathConstraints, HeaderConstraints
 
 from test_suite.sot_utils import (SoT, BLOCKED_PREFIXES, SNAPSHOT_NODES_SPEC, OPEN_CLIENT_PORTS)
+
+
+@pytest.mark.network_independent
+def test_no_forwarding_loops(bf: Session) -> None:
+    """Check that there are no forwarding loops in the network."""
+    looping_flows = bf.q.detectLoops().answer().frame()
+    assert looping_flows.empty, \
+        "Found flows that loop: {}".format(looping_flows.to_dict(orient="records"))
+
+
+@pytest.mark.network_independent
+def test_subnet_multipath_consistency(bf: Session) -> None:
+    """
+    Check that all flows between all pairs are multipath consistent.
+
+    Searches across all flows between subnets that are treated differently (i.e., dropped versus forwarded)
+    by different paths in the network and returns example flows.
+    """
+    multipath_inconsistent_flows = bf.q.subnetMultipathConsistency().answer().frame()
+    assert multipath_inconsistent_flows.empty, \
+        "Found flows that loop: {}".format(multipath_inconsistent_flows.to_dict(orient="records"))
 
 
 def test_public_services(bf: Session, sot: SoT) -> None:

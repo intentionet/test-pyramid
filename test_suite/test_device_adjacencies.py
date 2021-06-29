@@ -1,6 +1,16 @@
+import pytest
+
 from pybatfish.client.session import Session
 
 from test_suite.sot_utils import NodePair, SoT, SNAPSHOT_NODES_SPEC
+
+
+@pytest.mark.network_independent
+def test_no_incompatible_bgp_sessions(bf: Session) -> None:
+    bgp_session_status = bf.q.bgpSessionStatus().answer().frame()
+    unestablished_sessions = bgp_session_status[bgp_session_status["Established_Status"] != "ESTABLISHED"]
+    assert unestablished_sessions.empty, \
+        "Found leaf routers without EBGP multipath: {}".format(unestablished_sessions.to_dict(orient="records"))
 
 
 def test_layer3_edges(bf: Session, sot: SoT) -> None:
