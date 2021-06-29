@@ -9,11 +9,11 @@ from test_suite.sot_utils import (SoT, BLOCKED_PREFIXES, BL_EXPORT_ROUTEMAP_NAME
 
 
 @pytest.mark.network_independent
-def test_no_shadowed_filters(bf: Session) -> None:
+def test_no_unreachable_filter_lines(bf: Session) -> None:
     """
-    Check that there are no shadowed lines in ACLs and firewall rules.
+    Check that there are no unreachable lines in packet filters (ACLs and firewall rules).
 
-    Shadowed lines that those that will never match a packet because of earlier lines in the filter.
+    Unreachable lines are those that will never match a packet because of earlier lines in the filter.
     """
     # ignoring filters that start with ~ ignores auto-generated filters in the BF model
     unreachable_lines = bf.q.filterLineReachability(filters="/^[^~]/").answer().frame()

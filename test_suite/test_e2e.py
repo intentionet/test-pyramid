@@ -24,7 +24,7 @@ def test_subnet_multipath_consistency(bf: Session) -> None:
     """
     multipath_inconsistent_flows = bf.q.subnetMultipathConsistency().answer().frame()
     assert multipath_inconsistent_flows.empty, \
-        "Found flows that loop: {}".format(multipath_inconsistent_flows.to_dict(orient="records"))
+        "Found flows that are multipath inconsistent: {}".format(multipath_inconsistent_flows.to_dict(orient="records"))
 
 
 def test_public_services(bf: Session, sot: SoT) -> None:

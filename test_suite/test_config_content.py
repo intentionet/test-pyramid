@@ -109,8 +109,8 @@ def test_remote_as_spine(bf: Session, sot: SoT):
 
 
 def test_multipath_ebgp_on_leafs(bf: Session) -> None:
-    """Check that EBGP multipath is turned on at all leaf routers."""
+    """Check that EBGP multipath is enabled at all leaf routers."""
     bgp_process_config = bf.q.bgpProcessConfiguration(nodes="/leaf.*/").answer().frame()
     non_multipath = bgp_process_config[bgp_process_config["Multipath_EBGP"] == False]
     assert non_multipath.empty, \
-        "Found leaf routers without EBGP multipath: {}".format(",".join(non_multipath["Node"]))
+        "Found leaf routers without EBGP multipath enabled: {}".format(",".join(non_multipath["Node"]))
