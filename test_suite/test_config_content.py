@@ -114,7 +114,3 @@ def test_multipath_ebgp_on_leafs(bf: Session) -> None:
     non_multipath = bgp_process_config[bgp_process_config["Multipath_EBGP"] == False]
     assert non_multipath.empty, \
         "Found leaf routers without EBGP multipath: {}".format(",".join(non_multipath["Node"]))
-<<<<<<< Updated upstream:test_suite/test_config_settings.py
-=======
-
->>>>>>> Stashed changes:test_suite/test_config_content.py
