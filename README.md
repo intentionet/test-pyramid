@@ -2,14 +2,15 @@ This repository accompanies [the Networking Test Pyramid blog](https://www.inten
 
 # Running the test suite
 
-1. Download and run Batfish. Details [here](https://pybatfish.readthedocs.io/en/latest/getting_started.html); short version:
+## Setup
+1. Run the Batfish service. Details [here](https://pybatfish.readthedocs.io/en/latest/getting_started.html); short version:
    - `docker pull batfish/allinone`
    - `docker run --name batfish -v batfish-data:/data -p 8888:8888 -p 9997:9997 -p 9996:9996 batfish/allinone`
-3. Clone this repo
-4. In a Python virtual environment: 
+3. Clone this repo:
+   - ` git clone git@github.com:intentionet/test-pyramid.git`
+4. Install dependencies. In the top-level folder where you cloned the repo, and ideally in a Python virtual environment, do: 
    - `pip install -r requirements.txt`
-   - `pytest test_suite`
-
+   
 ## Running on the example network
 
 This repo contains an example network that you can use to play with the test suite. 
@@ -38,8 +39,7 @@ This repo contains an example network that you can use to play with the test sui
     
  - Or, if you wanted to run all tests with the word 'blocked' in them, you can do:   
 
-    `pytest -v -k blocked test_suite`
-    
+    `pytest -v -k blocked test_suite`    
 
 ## Running on your network
 
@@ -65,3 +65,4 @@ For questions or feedback, find us on [Slack](https://join.slack.com/t/batfish-o
 - The `snapshot` folder has the network snapshot that is used in the tests.
 - The `SoT` folder represents a mock source of truth for the network. 
 - `test-suite/sot_utils.py` makes this information available to the tests. If you are adapting this test suite for your network, start by modifying this script to use your actual SoT. 
+
