@@ -44,3 +44,9 @@ def sot() -> SoT:
     """Fixture to initialize the mock SoT used for these tests."""
     sot = SoT(SOT_DIR)
     return sot
+
+
+def pytest_configure(config):
+    config.addinivalue_line(
+        "markers", "network_independent: Tests that take no network dependent input and can be run on any network"
+    )

@@ -10,21 +10,22 @@ This repository accompanies [the Networking Test Pyramid blog](https://www.inten
    - ` git clone git@github.com:intentionet/test-pyramid.git`
 4. Install dependencies. In the top-level folder where you cloned the repo, and ideally in a Python virtual environment, do: 
    - `pip install -r requirements.txt`
-
-
+   
 ## Running on the example network
 
 This repo contains an example network that you can use to play with the test suite. 
 
  - You can run the test suite on this network by running the following command in the top-level folder:
 
-   `pytest test_suite`
+   `pytest -v test_suite`
 
-   All tests should pass.
+    The `-v` command line options will make pytest print the pass-fail status of each test is runs. Otherwise, only a summary and information about failing tests is printed on the console. All tests should pass if you run the test suite without modifying any test or network config. 
+    
+    Feel free to change network configs in `snapshot/configs` and observe their impact on test status. The following commands may help you in such an exploration.
 
  - If you wanted to run tests at only one level of the pyramid, you can do: 
 
-   `pytest -k config_content test_suite`
+   `pytest -v -k config_content test_suite`
    
    `-k` is a powerful pytest command line option that lets you run a subset of the tests by supplying a pattern. Full documentation is [here](https://docs.pytest.org/en/latest/example/markers.html#using-k-expr-to-select-tests-based-on-their-name) but common patterns include a subset of the name of the test module or the test name. 
    
@@ -34,12 +35,11 @@ This repo contains an example network that you can use to play with the test sui
    
  - So, if you wanted to run a particular test, you can do: 
  
-    `pytest -k test_no_duplicate_ips test_suite`
+    `pytest -v -k test_no_duplicate_ips test_suite`
     
  - Or, if you wanted to run all tests with the word 'blocked' in them, you can do:   
 
-    `pytest -k blocked test_suite`
-    
+    `pytest -v -k blocked test_suite`    
 
 ## Running on your network
 
@@ -47,14 +47,13 @@ To run the tests on your network, you need to supply your own network configs an
 
 1. Package your network configurations. See the `snapshot` folder of this repo as an example--the short version is to put all router configuration files in a subfolder named `configs`. Full details [these instructions](https://pybatfish.readthedocs.io/en/latest/notebooks/interacting.html#Packaging-snapshot-data).
 
-2. At this point, you can run tests that do not depend on network-specific input or the source of truth. Two such tests that you can run:
+2. At this point, you can run tests that do not depend on network-specific input or the source of truth. In the test suite, we have marked such tests as `network_independent` and you can run them via:
 
-    `pytest -k test_no_duplicate_ips test_suite`
-    `pytest -k test_no_undefined_references test_suite`
+    `pytest -v -k network_independent test_suite`
 
 3. Now, you can port the tests that are relevant for your network--not all tests in the test suite may be meaningful for you. A simple way to do that is to port over the constants and functions in `test_suite/sot_utils.py.` Many of these functions are based on the data in the `SoT` folder. 
 
-   You may do this porting test at a time, updating the inputs for indiviidual tests and testing along the way. 
+   You may do this porting test at a time, updating the inputs for individual tests and testing along the way. 
 
 4. Develop new tests that are relevant for your network, e.g., for behaviors your ACLs and firewall rules are intended to implement or for end-to-end connectivity properties of your network.
 
